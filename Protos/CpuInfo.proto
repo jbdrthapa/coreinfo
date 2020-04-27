@@ -1,29 +1,30 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
 option csharp_namespace = "Core.Protos";
 
 package Core.Protos;
 
 service CpuInfo {
-  rpc GetCpuInfo (CpuInfoRequest) returns (CpuInfoResponse);
+
+  rpc GetCpuInfo(google.protobuf.Empty) returns (CpuInfoData);
+
+  rpc GetCpuInfoStream(google.protobuf.Empty) returns (stream CpuInfoData);
 }
 
-message CpuInfoRequest
-{
-    
-}
-
-message CpuInfoResponse
-{
-    string Model = 1;
-    string ModelName = 2;
-    string Vendor = 3;
-    string Family = 4;
-    string Stepping = 5;
-    string MHz = 6;
-    string Cache = 7;
-    string Cores = 8;
-    string Microcode = 9;
-    string Flags = 10;
-    string VMX_Flags = 11;
+message CpuInfoData {
+  google.protobuf.Timestamp DateTimeStamp = 1;
+  string Model = 2;
+  string ModelName = 3;
+  string Vendor = 4;
+  string Family = 5;
+  string Stepping = 6;
+  string MHz = 7;
+  string Cache = 8;
+  string Cores = 9;
+  string Microcode = 10;
+  string Flags = 11;
+  string VMX_Flags = 12;
 }

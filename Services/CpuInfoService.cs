@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using Core.Protos;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using Google.Protobuf.WellKnownTypes;
+using System;
 
 namespace Core.Server
 {
@@ -14,7 +16,19 @@ namespace Core.Server
             _logger = logger;
         }
 
-        public override Task<CpuInfoResponse> GetCpuInfo(CpuInfoRequest request, ServerCallContext context)
+        public override async Task GetCpuInfoStream(Empty _, IServerStreamWriter<CpuInfoData> responseStream, ServerCallContext context)
+        {
+            while (!context.CancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(1000);
+
+                _logger.LogInformation("Sending CPU Info data");
+
+                await responseStream.WriteAsync(GetCpuInfo(_, context).Result);
+            }
+        }
+
+        public override Task<CpuInfoData> GetCpuInfo(Empty _, ServerCallContext context)
         {
             // Execute the command to get cpu info
             var cpuInfo = Utilities.ExecuteCommand("cat /proc/cpuinfo");
@@ -52,8 +66,9 @@ namespace Core.Server
             // CPU VMX Flags
             var cpuVMXFlags = Utilities.GetValue("vmx flags\t:", cpuInfo);
 
-            var response = new CpuInfoResponse()
+            var response = new CpuInfoData()
             {
+                DateTimeStamp = Timestamp.FromDateTime(DateTime.UtcNow),
                 Cache = cpuCache,
                 Cores = cpuCores,
                 Family = cpuFamily,
