@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option csharp_namespace = "Core.Protos";
+
+package Core.Protos;
+
+service CpuInfo {
+  rpc GetCpuInfo (CpuInfoRequest) returns (CpuInfoResponse);
+}
+
+message CpuInfoRequest
+{
+    
+}
+
+message CpuInfoResponse
+{
+    string Model = 1;
+    string ModelName = 2;
+    string Vendor = 3;
+    string Family = 4;
+    string Stepping = 5;
+    string MHz = 6;
+    string Cache = 7;
+    string Cores = 8;
+    string Microcode = 9;
+    string Flags = 10;
+    string VMX_Flags = 11;
+}
