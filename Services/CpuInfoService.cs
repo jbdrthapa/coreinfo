@@ -24,7 +24,7 @@ namespace Core.Server
 
                 _logger.LogInformation("Sending CPU Info data");
 
-                await responseStream.WriteAsync(GetCpuInfo(_, context).Result);
+                await responseStream.WriteAsync(await GetCpuInfo(_, context));
             }
         }
 
